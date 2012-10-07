@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rspec'
+require 'turnip'
 
 require 'worlds'
 include Worlds
