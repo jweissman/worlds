@@ -45,13 +45,19 @@ Feature: generate random populations
   # scalar features with multiple values
   # relationships between features
 
-#  Scenario: scalar features
-#    Given a feature 'height' with mean 70 and variance 25
- #    And a feature 'weight' (mean 160, variance 50) with an 80% correlation to 'height'
-#    When the population is sampled
-#    Then I should see individuals like
+  Scenario: scalar features
+   Given a feature 'height' with mean 70 and standard deviation 30
+#     And a feature 'weight' with mean 160 and standard deviation 50 having an 80% correlation to 'height'
+    When the population is sampled
+    Then average sampled height should be within 15 of 70
+     And 90 percent of sample height should be within 25 of 70
 
-
+  Scenario: correlated scalar features
+    Given a feature 'height' with mean 80 and standard deviation 40
+      And a feature 'weight' with mean 150 and standard deviation 30
+      And features 'height' and 'weight' have an 80 percent correlation
+     When the population is sampled
+      And sample height should have an 80 percent correlation to sample weight
 
 
 

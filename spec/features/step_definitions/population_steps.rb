@@ -1,43 +1,31 @@
 require 'worlds/world/population'
+require 'worlds/helpers/random_gaussian'
+require 'worlds/helpers/pearson'
 require 'peach'
 
 module PopulationSteps
   step "a feature ':name' with the following values:" do |name, values|
-    #puts "--- creating feature #{name} with values: "
-    #p values.raw.flatten
-    @features ||= []
-    @features << CategoricalAttribute.new(name, values.raw.flatten)
+    @features ||= {}
+    @features[name] = CategoricalAttribute.new(name, values.raw.flatten)
   end
 
-  step "a feature ':name' with mean :mean and variance :variance" do |name, mean, variance|
-    @features ||= []
-    @features << NormallyDistributedAttribute.new(name, mean.to_f, variance.to_f)
+  step "a feature ':name' with mean :mean and standard deviation :std_dev" do |name, mean, std_dev|
+    @features ||= {}
+    @features[name] = NormallyDistributedAttribute.new(name, mean.to_f, std_dev.to_f)
   end
 
-  # an evenly-distributed scalar
-  #step "a feature ':name' between :min and :max" do |name, min, max|
-  #  puts "--- creating feature #{name} between range #{min}..#{max}"
-  #  puts
-  #end
-  #
-  ## an independent gaussian scalar
-  #step "a feature ':name' with average :avg and deviation :std_dev" do |name, avg, std_dev|
-  #
-  #end
-
-  # how to capture dependent fields?
-  ## (height/weight distro dependent on gender)
-  # i think we need another level of abstraction -- i.e., subpopulations
-  # step "the subpopulation :subpop has :name with the following values: "
-  # step "the subpopulation :subpop has :name with mean :mean and variance :variance"
+  step "features ':feature_one' and ':feature_two' have an :rho percent correlation" do |feature_one, feature_two, rho|
+    one, two = @features.delete(feature_one), @features.delete(feature_two)
+    @features["#{feature_one}+#{feature_two}"] = CorrelatedAttributes.new(one, two, rho.to_f/100)
+  end
 
   step "the population is sampled" do
-    @population = Population.new(@features)
+    @population = Population.new(@features.values)
     @sample = @population.sample
   end
 
   step "a population of :population_size is sampled" do |population_size|
-    @population = Population.new(@features)
+    @population = Population.new(@features.values)
     @sample = @population.sample(population_size.to_i)
   end
 
@@ -47,6 +35,22 @@ module PopulationSteps
     end
   end
 
-  # similar to above but with tolerance limits?
-  # step "I should see individuals like the following"
+  step "average sampled :feature should be within :tolerance of :value" do |feature, tolerance, value|
+    data = @sample.map { |s| s[feature] }
+    mean = data.inject(:+).to_f / data.size
+    (value.to_f - mean).abs.should <= tolerance.to_f
+  end
+
+  step ":percentage percent of sample :feature should be within :tolerance of :value" do |percentage, feature, tolerance, value|
+    matched = @sample.select do |s|
+      (value.to_f - s[feature].to_f).abs < tolerance.to_f
+    end
+    (matched.count/@sample.size).should <= percentage.to_f/100
+  end
+
+  step "sample :feature_one should have an :rho percent correlation to sample :feature_two" do |feature_one, rho, feature_two|
+    x, y = @sample.map { |s| s[feature_one] }, @sample.map { |s| s[feature_two] }
+    # default tolerance => +/- 0.2
+    (rho.to_f/100 - Pearson.score(x,y)).should < 0.1
+  end
 end
