@@ -16,6 +16,11 @@ module PopulationSteps
     @normally_distributed_features << NormallyDistributedAttribute.new(name, mean.to_f, std_dev.to_f)
   end
 
+  step "a feature :name with mean :mean" do |name, mean|
+    @normally_distributed_features ||= []
+    @normally_distributed_features << NormallyDistributedAttribute.new(name, mean.to_f)
+  end
+
   step ":feature_one and :feature_two are strongly correlated" do |feature_one, feature_two|
     correlate(feature_one, feature_two, 0.8)
   end
@@ -44,6 +49,10 @@ module PopulationSteps
     table.hashes.each do |hash|
       @sample.any? { |member| member == hash }.should be_true
     end
+  end
+
+  step "I should see individuals with :feature ':feature_value'" do |feature, feature_value|
+    @sample.any? { |member| member[feature] == feature_value }.should be_true
   end
 
   step "average sampled :feature should be within :tolerance of :value" do |feature, tolerance, value|

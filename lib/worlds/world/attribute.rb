@@ -40,7 +40,7 @@ module Worlds
     class NormallyDistributedAttribute < Base
       attr_accessor :mean, :standard_deviation
 
-      def initialize(name, mean, standard_deviation)
+      def initialize(name, mean=0, standard_deviation=1)
         super(name)
         @mean = mean
         @standard_deviation = standard_deviation
@@ -51,47 +51,6 @@ module Worlds
         @random_gaussian.rand
       end
     end
-
-    #class AttributePair < Base
-    #  attr_accessor :feature_one, :feature_two
-    #  def initialize(feature_one, feature_two)
-    #    @feature_one = feature_one
-    #    @feature_two = feature_two
-    #  end
-    #
-    #  def sample
-    #    [@feature_one.sample, @feature_two.sample]
-    #  end
-    #
-    #  def sample!(individual)
-    #    individual[@feature_one.name], individual[@feature_two.name] = sample
-    #  end
-    #end
-
-    #
-    #  We assume the two provided attributes are normally distributed.
-    #  For standard normals, we make two draws Z1 and Z2 from the standard normal generator.
-    #  Then, we use Z1 and Z3 = rho Z1 + Sqrt ( 1 - rho^2 ) Z2, where rho is the desired correlation.
-    #
-    #  N.B.: this approach is really not generalizable either in structure or logic to larger sets
-    #  of correlated random variables. We'd need more sophisticated techniques (covariance matrices)
-    #  to effectively achieve this...
-    #
-    #class CorrelatedAttributePair < AttributePair # Base #Struct.new(:feature_one, :feature_two, :rho)
-    #  attr_accessor :rho
-    #
-    #  def initialize(feature_one, feature_two, rho)
-    #    super(feature_one, feature_two)
-    #    @rho = rho
-    #    @rho_coeff = Math.sqrt(1-(@rho**2))
-    #  end
-    #
-    #  def sample
-    #    x,y = @feature_one.sample, @feature_two.sample
-    #    y_prime = x*@rho + y*@rho #Math.sqrt(1-(@rho**2))
-    #    [x, y_prime]
-    #  end
-    #end
 
 
     #
@@ -106,40 +65,18 @@ module Worlds
       end
 
       def cholesky_decomposition
-        #puts "--- calculating cholemsky decomposition of covariance matrix: "
-        #p covariance_matrix
-
         @cholesky_decomposition ||= Cholesky.decomposition(covariance_matrix)
-
-        #puts "--- resultant decomposition: "
-        #p @cholesky_decomposition
-
-        #return @cholesky_decomposition
       end
 
       def sample
-        #puts "--- attempting to sample correlated attribute vector!"
-        #p self
-
         feature_vector = Array.new(features.length) { random_gaussian.rand }
-
-        #puts "--- uncorrelated feature vector: "
-        #p feature_vector
-
         correlated_feature_vector = Matrix[feature_vector] * cholesky_decomposition.t
-
-        #puts "--- correlated feature vector: "
-        #p correlated_feature_vector
 
         resultant_feature_vector = []
         correlated_feature_vector.each_with_index do |feature_value, index|
           resultant_feature_vector << feature_value * features[index].mean
         end
 
-        #puts "--- resultant feature vector (after multiplying by means): "
-        #p correlated_feature_vector.to_a.flatten
-
-        #correlated_feature_vector.to_a.flatten
         resultant_feature_vector
       end
 

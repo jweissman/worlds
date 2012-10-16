@@ -51,6 +51,15 @@ Feature: generate random populations
     Then average sampled height should be within 15 of 70
      And 90 percent of sampled height should be within 25 of 70
 
+  Scenario: a mix of scalar and categoreal features
+    Given a feature height with mean 60 and standard deviation 10
+      And a feature gender with the following values:
+       | male   |
+       | female |
+     When the population is sampled
+     Then I should see individuals with gender 'male'
+      And 90 percent of sampled height should be within 20 of 60
+
   Scenario: weakly-correlated scalar feature pair
     Given a feature height with mean 80 and standard deviation 40
     And a feature weight with mean 150 and standard deviation 30
@@ -72,13 +81,13 @@ Feature: generate random populations
      When a large population is sampled
      Then height and weight should be 30 percent correlated
 
-#  Scenario: random vectors with covariance
-
-
-  Scenario: random vectors with covariance
-    Given a feature height with mean 80 and standard deviation 25
-      And a feature weight with mean 150 and standard deviation 30
-      And a feature foot_size with mean 10 and standard deviation 3
+  Scenario: multiple features with covariance matrix
+    Given a feature height with mean 80
+  #and standard deviation 25
+      And a feature weight with mean 150
+  #and standard deviation 30
+      And a feature foot_size with mean 10
+  # and standard deviation 3
       And height and weight are strongly correlated
       And weight and foot_size are weakly correlated
       And height and foot_size are 90 percent correlated
@@ -87,17 +96,6 @@ Feature: generate random populations
       And weight and foot_size should be weakly correlated
       And height and foot_size should be 90 percent correlated
 
-
-#      And the following covariance matrix:
-#        |           | height | weight | foot_size |
-#        | height    |        |        |           |
-#        | weight    |        |        |           |
-#        | foot_size |        |        |           |
-
-
-
-#  Scenario: several correlated scalar features
-#    Given a feature 'height' with mean 80 and standard deviation
 
   # Scenario: subpopulations (e.g.: males have one distribution, females another)
   # Given ...
