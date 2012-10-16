@@ -3,7 +3,7 @@ Feature: generate random populations
   A world creator should be able to generate random populations
 
   Scenario: one feature with one value
-    Given a feature 'species' with the following values:
+    Given a feature species with the following values:
       | human |
     When the population is sampled
     Then I should see the following individuals
@@ -11,7 +11,7 @@ Feature: generate random populations
       |  human  |
 
   Scenario: one feature with two values
-    Given a feature 'species' with the following values:
+    Given a feature species with the following values:
       | human |
       | alien |
     When the population is sampled
@@ -21,20 +21,20 @@ Feature: generate random populations
       |  alien  |
 
   Scenario: several features with several values
-    Given a feature 'gender' with the following values:
+    Given a feature gender with the following values:
       | male   |
       | female |
       | other  |
-    And a feature 'species' with the following values:
+    And a feature species with the following values:
       | human   |
       | alien   |
       | machine |
-    And a feature 'profession' with the following values:
+    And a feature profession with the following values:
       | merchant |
       | priest   |
       | soldier  |
       | pilot    |
-    When a population of 30000 is sampled
+    When a large population is sampled
     Then I should see the following individuals
       | species | gender | profession |
       |  human  |  male  |  soldier   |
@@ -46,23 +46,61 @@ Feature: generate random populations
   # relationships between features
 
   Scenario: scalar features
-   Given a feature 'height' with mean 70 and standard deviation 30
-#     And a feature 'weight' with mean 160 and standard deviation 50 having an 80% correlation to 'height'
+   Given a feature height with mean 70 and standard deviation 30
     When the population is sampled
     Then average sampled height should be within 15 of 70
-     And 90 percent of sample height should be within 25 of 70
+     And 90 percent of sampled height should be within 25 of 70
 
-  Scenario: correlated scalar features
-    Given a feature 'height' with mean 80 and standard deviation 40
-      And a feature 'weight' with mean 150 and standard deviation 30
-      And features 'height' and 'weight' have an 80 percent correlation
-     When the population is sampled
-      And sample height should have an 80 percent correlation to sample weight
+  Scenario: weakly-correlated scalar feature pair
+    Given a feature height with mean 80 and standard deviation 40
+    And a feature weight with mean 150 and standard deviation 30
+    And height and weight are weakly correlated
+    When a large population is sampled
+    Then height and weight should be weakly correlated
+
+  Scenario: strongly-correlated scalar feature pair
+    Given a feature height with mean 80 and standard deviation 40
+      And a feature weight with mean 150 and standard deviation 30
+      And height and weight are strongly correlated
+     When a large population is sampled
+     Then height and weight should be strongly correlated
+
+  Scenario: arbitrarily-correlated scalar feature pair
+    Given a feature height with mean 80 and standard deviation 45
+      And a feature weight with mean 160 and standard deviation 50
+      And height and weight are 30 percent correlated
+     When a large population is sampled
+     Then height and weight should be 30 percent correlated
+
+#  Scenario: random vectors with covariance
+
+
+#  Scenario: random vectors with covariance
+#    Given a feature height with mean 80 and standard deviation 25
+#      And a feature weight with mean 150 and standard deviation 30
+#      And a feature foot_size with mean 10 and standard deviation 3
+#      And height and weight are strongly correlated
+#      And weight and foot_size are weakly correlated
+#      And height and foot_size are 90 percent correlated
+#     When a large population is sampled
+#     Then height and weight should be strongly correlated
+#      And weight and foot_size should be weakly correlated
+#      And height and foot_size should be 90 percent correlated
+
+
+#      And the following covariance matrix:
+#        |           | height | weight | foot_size |
+#        | height    |        |        |           |
+#        | weight    |        |        |           |
+#        | foot_size |        |        |           |
 
 
 
+#  Scenario: several correlated scalar features
+#    Given a feature 'height' with mean 80 and standard deviation
 
-
+  # Scenario: subpopulations (e.g.: males have one distribution, females another)
+  # Given ...
 
 
 #  Scenario: generating people

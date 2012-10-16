@@ -18,7 +18,10 @@ class Pearson
     # calculate pearson score
     num = sigma_products-(sigma_x*sigma_y/n)
     den=((sigma_x_squared-(sigma_x**2)/n)*(sigma_y_squared-(sigma_y**2)/n))**0.5
-    return 0 if den==0
-    num/den
+    score = den == 0 ? 0 : num/den
+    #score = 0 if den==0
+    #num/den
+    p score
+    score
   end
 end

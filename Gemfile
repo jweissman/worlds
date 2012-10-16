@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # parallel each/map/etc
-gem 'peach'
+#gem 'peach'
 
 group :test do
   gem 'rake'
