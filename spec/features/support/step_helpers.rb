@@ -7,7 +7,7 @@ module StepHelpers
     @covariance_matrix[names.index(b),names.index(a)] = rho
   end
 
-  def confirm_correlation(a,b,rho,tolerance=0.02)
+  def confirm_correlation(a,b,rho,tolerance=0.01)
     x,y = @sample.map { |s| s[a] }, @sample.map { |s| s[b] }
     (rho - Pearson.score(x,y)).abs.should < tolerance
   end
