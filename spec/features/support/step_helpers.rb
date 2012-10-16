@@ -4,9 +4,10 @@ module StepHelpers
     @covariance_matrix ||= Matrix.I(@normally_distributed_features.size)
     names = @normally_distributed_features.map(&:name)
     @covariance_matrix[names.index(a),names.index(b)] = rho
+    @covariance_matrix[names.index(b),names.index(a)] = rho
   end
 
-  def confirm_correlation(a,b,rho,tolerance=0.01)
+  def confirm_correlation(a,b,rho,tolerance=0.02)
     x,y = @sample.map { |s| s[a] }, @sample.map { |s| s[b] }
     (rho - Pearson.score(x,y)).abs.should < tolerance
   end

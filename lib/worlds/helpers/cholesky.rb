@@ -16,6 +16,7 @@ class Cholesky
   #
   #
   def self.decomposition(matrix)
+    raise "Matrix must be square to decompose!" unless matrix.square?
     n = matrix.row_size
     result = Matrix.build(n,n) { 0 } #empty(n,n)
     n.times do |i|

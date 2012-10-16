@@ -106,7 +106,15 @@ module Worlds
       end
 
       def cholesky_decomposition
+        #puts "--- calculating cholemsky decomposition of covariance matrix: "
+        #p covariance_matrix
+
         @cholesky_decomposition ||= Cholesky.decomposition(covariance_matrix)
+
+        #puts "--- resultant decomposition: "
+        #p @cholesky_decomposition
+
+        #return @cholesky_decomposition
       end
 
       def sample
@@ -114,13 +122,25 @@ module Worlds
         #p self
 
         feature_vector = Array.new(features.length) { random_gaussian.rand }
-        correlated_feature_vector = cholesky_decomposition * Vector[*feature_vector]
+
+        #puts "--- uncorrelated feature vector: "
+        #p feature_vector
+
+        correlated_feature_vector = Matrix[feature_vector] * cholesky_decomposition.t
+
+        #puts "--- correlated feature vector: "
+        #p correlated_feature_vector
+
         resultant_feature_vector = []
         correlated_feature_vector.each_with_index do |feature_value, index|
           resultant_feature_vector << feature_value * features[index].mean
         end
 
-        return resultant_feature_vector
+        #puts "--- resultant feature vector (after multiplying by means): "
+        #p correlated_feature_vector.to_a.flatten
+
+        #correlated_feature_vector.to_a.flatten
+        resultant_feature_vector
       end
 
       def sample!(individual)
