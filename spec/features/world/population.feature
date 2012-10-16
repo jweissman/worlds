@@ -75,17 +75,17 @@ Feature: generate random populations
 #  Scenario: random vectors with covariance
 
 
-#  Scenario: random vectors with covariance
-#    Given a feature height with mean 80 and standard deviation 25
-#      And a feature weight with mean 150 and standard deviation 30
-#      And a feature foot_size with mean 10 and standard deviation 3
-#      And height and weight are strongly correlated
-#      And weight and foot_size are weakly correlated
-#      And height and foot_size are 90 percent correlated
-#     When a large population is sampled
-#     Then height and weight should be strongly correlated
-#      And weight and foot_size should be weakly correlated
-#      And height and foot_size should be 90 percent correlated
+  Scenario: random vectors with covariance
+    Given a feature height with mean 80 and standard deviation 25
+      And a feature weight with mean 150 and standard deviation 30
+      And a feature foot_size with mean 10 and standard deviation 3
+      And height and weight are strongly correlated
+      And weight and foot_size are weakly correlated
+      And height and foot_size are 90 percent correlated
+     When a large population is sampled
+     Then height and weight should be strongly correlated
+      And weight and foot_size should be weakly correlated
+      And height and foot_size should be 90 percent correlated
 
 
 #      And the following covariance matrix:
