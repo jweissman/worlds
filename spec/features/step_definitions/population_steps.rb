@@ -33,7 +33,7 @@ module PopulationSteps
   end
 
   step "a large population is sampled" do
-    generate_sample(30000)
+    generate_sample(300)
   end
 
   step "a population of :population_size is sampled" do |population_size|

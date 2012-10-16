@@ -110,8 +110,8 @@ module Worlds
       end
 
       def sample
-        puts "--- attempting to sample correlated attribute vector!"
-        p self
+        #puts "--- attempting to sample correlated attribute vector!"
+        #p self
 
         feature_vector = Array.new(features.length) { random_gaussian.rand }
         correlated_feature_vector = cholesky_decomposition * Vector[*feature_vector]

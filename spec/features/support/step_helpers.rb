@@ -25,8 +25,8 @@ module StepHelpers
         @features << CorrelatedAttributeVector.new(@normally_distributed_features, @covariance_matrix)
       end
     end
-    puts "--- about to setup and #sample population after considering normally distributed features: "
-    p @features
+    #puts "--- about to setup and #sample population after considering normally distributed features: "
+    #p @features
 
     @population = Population::Base.new(@features)
     @sample = @population.sample(size)
