@@ -55,10 +55,18 @@ module PopulationSteps
     @sample.any? { |member| member[feature] == feature_value }.should be_true
   end
 
-  step "average sampled :feature should be within :tolerance of :value" do |feature, tolerance, value|
-    data = @sample.map { |s| s[feature].to_f }
-    mean = data.inject(:+) / data.size.to_f
-    (value.to_f - mean).abs.should <= tolerance.to_f
+  step "mean :feature should be within :tolerance of :value" do |feature, tolerance, value|
+    #data = @sample.map { |s| s[feature].to_f }
+    #mean = data.inject(:+) / data.size.to_f
+    #(value.to_f - mean).abs.should <= tolerance.to_f
+    confirm_mean(feature, value, tolerance)
+  end
+
+  step "mean :feature should be :value" do |feature, value|
+    #data = @sample.map { |s| s[feature].to_f }
+    #mean = data.inject(:+) / data.size.to_f
+    #(value.to_f - mean).abs.should <= tolerance.to_f
+    confirm_mean(feature, value)
   end
 
   step "at least :percentage percent of sampled :feature should be within :tolerance of :value" do |percentage, feature, tolerance, value|

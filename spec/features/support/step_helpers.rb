@@ -1,4 +1,13 @@
 module StepHelpers
+  def get_feature_by_name(feature_name)
+    @normally_distributed_features.select { |f| f.name == feature_name }.first
+  end
+
+  def confirm_mean(feature, value, tolerance=get_feature_by_name(feature).standard_deviation/4)
+    data = @sample.map { |s| s[feature].to_f }
+    mean = data.inject(:+) / data.size.to_f
+    (value.to_f - mean).abs.should <= tolerance.to_f
+  end
 
   def correlate(a,b,rho)
     @covariance_matrix ||= Matrix.I(@normally_distributed_features.size)
@@ -13,10 +22,7 @@ module StepHelpers
   end
 
   def generate_sample(size=30)
-    #puts "--- attempting to generate sample..."
     @features ||= []
-    #puts "--- current feature list: "
-    #p @features
     unless @normally_distributed_features.nil?
       if @normally_distributed_features.size <= 1
         @normally_distributed_features.each do |feature|
@@ -26,9 +32,6 @@ module StepHelpers
         @features << CorrelatedAttributeVector.new(@normally_distributed_features, @covariance_matrix)
       end
     end
-    #puts "--- about to setup and #sample population after considering normally distributed features: "
-    #p @features
-
     @population = Population::Base.new(@features)
     @sample = @population.sample(size)
   end
