@@ -61,7 +61,7 @@ module PopulationSteps
     (value.to_f - mean).abs.should <= tolerance.to_f
   end
 
-  step ":percentage percent of sampled :feature should be within :tolerance of :value" do |percentage, feature, tolerance, value|
+  step "at least :percentage percent of sampled :feature should be within :tolerance of :value" do |percentage, feature, tolerance, value|
     matched = @sample.select do |s|
       (value.to_f - s[feature].to_f).abs < tolerance.to_f
     end

@@ -49,7 +49,8 @@ Feature: generate random populations
    Given a feature height with mean 70 and standard deviation 30
     When the population is sampled
     Then average sampled height should be within 15 of 70
-     And 90 percent of sampled height should be within 25 of 70
+     And at least 68 percent of sampled height should be within 30 of 70
+     And at least 95 percent of sampled height should be within 60 of 70
 
   Scenario: a mix of scalar and categoreal features
     Given a feature height with mean 60 and standard deviation 10
@@ -58,14 +59,16 @@ Feature: generate random populations
        | female |
      When the population is sampled
      Then I should see individuals with gender 'male'
-      And 90 percent of sampled height should be within 20 of 60
+      And at least 68 percent of sampled height should be within 10 of 60
+      And at least 95 percent of sampled height should be within 20 of 60
 
   Scenario: weakly-correlated scalar feature pair
     Given a feature height with mean 80 and standard deviation 40
-    And a feature weight with mean 150 and standard deviation 30
-    And height and weight are weakly correlated
-    When a large population is sampled
-    Then height and weight should be weakly correlated
+      And a feature weight with mean 150 and standard deviation 30
+      And height and weight are weakly correlated
+     When a large population is sampled
+     Then height and weight should be weakly correlated
+#      And
 
   Scenario: strongly-correlated scalar feature pair
     Given a feature height with mean 80 and standard deviation 40
@@ -82,12 +85,9 @@ Feature: generate random populations
      Then height and weight should be 30 percent correlated
 
   Scenario: multiple features with covariance matrix
-    Given a feature height with mean 80
-  #and standard deviation 25
-      And a feature weight with mean 150
-  #and standard deviation 30
-      And a feature foot_size with mean 10
-  # and standard deviation 3
+    Given a feature height with mean 80 and standard deviation 25
+      And a feature weight with mean 150 and standard deviation 30
+      And a feature foot_size with mean 10 and standard deviation 3
       And height and weight are strongly correlated
       And weight and foot_size are weakly correlated
       And height and foot_size are 90 percent correlated
@@ -95,6 +95,12 @@ Feature: generate random populations
      Then height and weight should be strongly correlated
       And weight and foot_size should be weakly correlated
       And height and foot_size should be 90 percent correlated
+#      And at least 68 percent of foot_size should be within 3 of 10
+##      And at least 95 percent of foot_size should be within 6 of 10
+#      And at least 68 percent of height should be within 25 of 80
+#      And at least 95 percent of height should be within 50 of 80
+#      And at least 68 percent of weight should be within 30 of 150
+#      And at least 95 percent of weight should be within 60 of 150
 
 
   # Scenario: subpopulations (e.g.: males have one distribution, females another)

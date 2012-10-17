@@ -74,7 +74,8 @@ module Worlds
 
         resultant_feature_vector = []
         correlated_feature_vector.each_with_index do |feature_value, index|
-          resultant_feature_vector << feature_value * features[index].mean
+          value = (feature_value * features[index].standard_deviation) + features[index].mean
+          resultant_feature_vector << value
         end
 
         resultant_feature_vector

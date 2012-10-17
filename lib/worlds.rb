@@ -1,6 +1,4 @@
-
 require "matrix"
-
 
 require "worlds/version"
 
@@ -12,6 +10,6 @@ require "worlds/world/attribute"
 require "worlds/world/base"
 require "worlds/world/population"
 
-module Worlds
-
-end
+#module Worlds
+  # helpers/dsl here?
+#end
