@@ -1,29 +1,8 @@
-# Worlds
+Welcome to Worlds!
+==================
 
-TODO: Write a gem description
+The basic idea is to provide a set of tools for generating and simulating populations.
 
-## Installation
+Eventually I'd like some of this to be exposed as an online tool; maybe it could support games as well.
 
-Add this line to your application's Gemfile:
-
-    gem 'worlds'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install worlds
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Github project: http://github.com/jweissman/worlds
