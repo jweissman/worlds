@@ -8,9 +8,14 @@ class Cholesky
   #   Assumptions:
   #     - matrix is square
   #
+  #   TODO: refactor not to rely on mutable matrix.
+  #
   #
   def self.decomposition(matrix)
-    raise "Matrix must be square to decompose!" unless matrix.square?
+    # some sanity checks
+    raise "Argument to Cholesky.decomposition must be a Matrix" unless matrix.is_a? Matrix
+    raise "Argument to Cholesky.decomposition must be a square Matrix" unless matrix.square?
+
     n = matrix.row_size
     result = Matrix.build(n,n) { 0 } #empty(n,n)
     n.times do |i|

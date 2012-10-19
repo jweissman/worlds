@@ -60,61 +60,63 @@ module Worlds
     #   Assumptions:
     #     - features are normally distributed.
     #
-    class CorrelatedAttributeVector < Struct.new(:features, :covariance_matrix)
+    class CorrelatedAttributeVector # < Struct.new(:features, :covariance_matrix)
+
+      def initialize(features, covariance_matrix=Matrix.I(features.count))
+        @features = features
+        @covariance_matrix = covariance_matrix
+
+        #puts "--- Initialized correlated attribute vector with features: "
+        p @features
+        #puts "--- Using covariance matrix: "
+        p @covariance_matrix
+      end
+
       def standard_normal
-        @@standard_normal ||= RandomGaussian.new(0,1)
+        @standard_normal ||= RandomGaussian.new(0,1)
       end
 
       def cholesky_decomposition
-        @cholesky_decomposition ||= Cholesky.decomposition(covariance_matrix)
+        @cholesky_decomposition ||= Cholesky.decomposition(@covariance_matrix)
       end
 
       def sample
-        normals = Array.new(features.count) { standard_normal.rand }
+        #puts "--- Attempting to sample correlated attributes..."
+        normals = Array.new(@features.count) { standard_normal.rand }
         feature_vector = Matrix[normals]
 
-        puts "--- got feature vector: "
-        p feature_vector
+        #puts "--- Standard normal feature vector: "
+        #p feature_vector
 
-        #puts "--- attempting to multiply by cholesky decomposition: "
+        #puts "--- Attempting to multiply by cholesky decomposition of covariance matrix: "
         #p cholesky_decomposition
 
         correlated_feature_vector = feature_vector * cholesky_decomposition.t
-        ##resultant_feature_vector = []
-        #
-        #puts "--- got correlated feature vector: "
+        #puts "--- Correlated feature vector: "
         #p correlated_feature_vector
-        #
-        #means = features.map(&:mean)
-        #mean_vector = Matrix[means]
-        #puts "--- and got mean vector: "
-        #p mean_vector
-        #
-        #
-        #deviations = features.map(&:standard_deviation)
-        #standard_deviation_vector = Matrix[deviations]
-        #puts "--- and std dev vector: "
-        #p standard_deviation_vector
-        #
-        #correlated_feature_vector_with_variance = correlated_feature_vector * standard_deviation_vector.t #+ mean_vector
-        #puts "--- after applying variance: "
-        #p correlated_feature_vector_with_variance
 
-        resultant_feature_vector = [] #correlated_feature_vector_with_variance + mean_vector
 
-        correlated_feature_vector.each_with_index do |feature_value, index|
-          feature = features[index]
-          #puts "--- correlating feature #{feature.name}. denormalized value: #{feature_value}"
+        resultant_feature_vector = []
+
+        #p correlated_feature_vector
+        correlated_feature_vector.each_with_index do |feature_value, _, index|
+          feature = @features[index]
+          #puts "--- Transforming feature #{index} (#{feature.name}); original value: #{feature_value}"
           value = (feature_value * feature.standard_deviation) + feature.mean
-          #puts "--- after normalization (std dev #{feature.standard_deviation}, mean #{feature.mean}): #{value}"
+          #puts "--- After normalization (std dev #{feature.standard_deviation}, mean #{feature.mean}): #{value}"
           resultant_feature_vector << value
+          #n+=1
         end
+
+        #puts "--- Resultant feature vector: "
+        #p resultant_feature_vector
+
         resultant_feature_vector
       end
 
       def sample!(individual)
         sample.each_with_index do |feature_value, index|
-          individual[features[index].name] = feature_value
+          individual[@features[index].name] = feature_value
         end
       end
     end

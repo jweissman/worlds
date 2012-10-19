@@ -1,14 +1,18 @@
-#require "matrix"
+require "matrix"
 
-#require "worlds/version"
+##########
 
-#require "worlds/helpers/random_gaussian"
-#require "worlds/helpers/pearson"
-#require "worlds/helpers/cholesky"
-#
-#require "worlds/world/attribute"
-#require "worlds/world/base"
-#require "worlds/world/population"
+require "worlds/version"
+
+require "worlds/ext/array"
+require "worlds/ext/matrix"
+
+require "worlds/helpers/random_gaussian"
+require "worlds/helpers/pearson"
+require "worlds/helpers/cholesky"
+
+require "worlds/world/attribute"
+require "worlds/world/population"
 
 module Worlds
   # helpers/dsl here?
