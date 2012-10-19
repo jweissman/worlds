@@ -7,30 +7,25 @@ module Worlds
     WEAK_CORRELATION = 0.5
 
     # default error tolerance
-    # if a straight evaluation fails, we will in certain cases make
-    # a percent error calculation to see if we were within 2% of desired target
+    # we will in certain cases make a percent error calculation
+    # to see if we were within a given percentage of desired target
+    # (also sometimes used as a fallback measure if a 'strict' assertion fails)
     DEFAULT_TOLERANCE = 0.02
 
     class Base
       attr_accessor :categorical_features, :normally_distributed_features, :covariance_matrix
 
       def initialize
-        #puts "--- Population intialized."
         @categorical_features = []
         @normally_distributed_features = []
       end
 
       def sample!(n=DEFAULT_SAMPLE_SIZE)
-        #puts "--- Taking sample of size #{n}."
         Array.new(n) do
-          #puts "--- Generating member #{n}..."
           member = features.inject({}) do |result, feature|
-            #puts "--- Sampling feature #{feature.name}..."
             feature.sample!(result)
             result
           end
-          #puts "--- Generated member: "
-          #p member
           member
         end
       end
@@ -92,44 +87,27 @@ module Worlds
       end
 
       def percent_within_deviations?(feature_name, percentage=0.68, deviations=1, tolerance=DEFAULT_TOLERANCE)
-        puts "--- Attempting to determine whether #{percentage}% of #{feature_name} is within #{deviations} standard deviations."
         feature = get_feature_by_name(feature_name)
-
         mean = feature.mean.to_f
         max_variance = (feature.standard_deviation.to_f * deviations).to_f
-        puts "--- Maximum variance for this deviation: #{max_variance}"
-        puts "--- Desired mean for this distribution: #{mean}"
-
         expected_percentage = percentage.to_f/100
         matched = sample.select do |s|
           (s[feature.name].to_f - mean).abs < max_variance
         end
         actual_percentage = (matched.count.to_f/sample.size) #*100
-        puts "--- Matched percentage: #{actual_percentage*100}% (expected: #{expected_percentage*100}%)"
-        puts "--- At least #{expected_percentage*100}% within deviation? #{actual_percentage >= expected_percentage}"
-
         return true if actual_percentage >= expected_percentage
         error = (expected_percentage - actual_percentage)/actual_percentage
-        puts "--- Percentage error? #{error} (tolerance: #{tolerance})"
         error <= tolerance
       end
 
       def three_sigma_holds_for?(feature_name)
-        puts "--- Attempting to determine whether the empirical rule holds for the sample population's #{feature_name}..."
-
         one_sigma = percent_within_deviations?(feature_name, 68, 1)
-        two_sigma = percent_within_deviations?(feature_name, 95, 2) #.should be_true
-        three_sigma = percent_within_deviations?(feature_name, 99.7, 3) #.should be_true
-
-        puts "--- One sigma? #{one_sigma}"
-        puts "--- Two sigma? #{two_sigma}"
-        puts "--- Three sigma? #{three_sigma}"
-
+        two_sigma = percent_within_deviations?(feature_name, 95, 2)
+        three_sigma = percent_within_deviations?(feature_name, 99.7, 3)
         one_sigma and two_sigma and three_sigma
       end
 
       def three_sigma_holds?
-        puts "--- Attempting to determine whether the empirical rule holds for the sample population..."
         @normally_distributed_features.all? do |feature|
           three_sigma_holds_for?(feature.name)
         end
@@ -151,13 +129,9 @@ module Worlds
       end
 
       def correlated?(a,b,expected_rho,tolerance=DEFAULT_TOLERANCE)
-        puts "====="
-        puts "--- Attempting to determine whether #{a} and #{b} are #{expected_rho*100}% correlated"
         x,y = sample.map { |s| s[a] }, sample.map { |s| s[b] }
         actual_rho = Pearson.score(x,y)
-        puts "--- Actual correlation: #{actual_rho}"
         error = ((expected_rho-actual_rho)/actual_rho)
-        puts "--- Percent error: #{error}"
         error < tolerance
       end
 
