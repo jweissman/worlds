@@ -1,16 +1,16 @@
 module Worlds
   module Population
     DEFAULT_SAMPLE_SIZE = 30
-    LARGE_SAMPLE_SIZE = 300000
+    LARGE_SAMPLE_SIZE = 30000
 
     STRONG_CORRELATION = 0.8
     WEAK_CORRELATION = 0.5
 
-    # default error tolerance
-    # we will in certain cases make a percent error calculation
+    # default error tolerance is 3%
+    # note we will in certain cases make a percent error calculation
     # to see if we were within a given percentage of desired target
     # (also sometimes used as a fallback measure if a 'strict' assertion fails)
-    DEFAULT_TOLERANCE = 0.02
+    DEFAULT_TOLERANCE = 0.03
 
     class Base
       attr_accessor :categorical_features, :normally_distributed_features, :covariance_matrix

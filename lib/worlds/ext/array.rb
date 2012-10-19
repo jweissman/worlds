@@ -9,11 +9,8 @@ class Array
   end
   alias :average :mean
 
-  def sum_squared
+  def sum_of_squares
     inject(0) {|r,i| r+i**2}
   end
-  alias :total_squared :sum_squared
-
-
 
 end

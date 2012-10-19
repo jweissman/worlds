@@ -9,6 +9,10 @@ Before do
   @population = Population::Base.new
 end
 
+Given /^a feature "([^"]*)" with the constant value "([^"]*)"$/ do |name, value|
+  @population.categorical_features << ConstantAttribute.new(name, value)
+end
+
 Given /^a feature "(.*?)" with the following values:/ do |name, table|
   @population.categorical_features << CategoricalAttribute.new(name, table.raw.flatten)
 end

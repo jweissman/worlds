@@ -3,8 +3,7 @@ Feature: generate pseudorandom categorical attributes
   a world creator should be able to create populations with pseudorandom categorical attributes
 
   Scenario: one feature with one value
-    Given a feature "species" with the following values:
-      | human |
+    Given a feature "species" with the constant value "human"
     When the population is sampled
     Then I should see the following individuals:
       | species |

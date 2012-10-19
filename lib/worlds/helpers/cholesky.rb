@@ -15,22 +15,15 @@ class Cholesky
     # some sanity checks
     raise "Argument to Cholesky.decomposition must be a Matrix" unless matrix.is_a? Matrix
     raise "Argument to Cholesky.decomposition must be a square Matrix" unless matrix.square?
-
     n = matrix.row_size
-    result = Matrix.build(n,n) { 0 } #empty(n,n)
+    result = Matrix.build(n,n) { 0 }
     n.times do |i|
       n.times do |j|
         if i==j
-          val = (0...j).to_a.inject(0) do |sum,k|
-            sum += result[j,k]**2
-            sum
-          end
+          val = (0...j).to_a.inject(0) { |sum,k| sum + result[j,k]**2 }
           result[j,j] = Math.sqrt(matrix[j,j] - val)
         elsif i>j
-          val = (0...j).to_a.inject(0) do |sum,k|
-            sum += result[i,k]*result[j,k]
-            sum
-          end
+          val = (0...j).to_a.inject(0) { |sum,k| sum + result[i,k]*result[j,k] }
           result[i,j] = (1/result[j,j])*(matrix[i,j] - val)
         end
       end
