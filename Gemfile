@@ -5,8 +5,8 @@ source 'https://rubygems.org'
 
 group :test do
   gem 'rake'
+  gem 'rspec'
   gem 'cucumber'
-  #gem 'rspec'
   #gem 'turnip'
 end
 

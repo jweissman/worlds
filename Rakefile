@@ -1,9 +1,13 @@
+require 'rubygems'
+require 'bundler/setup'
 require "bundler/gem_tasks"
-require 'rspec/core/rake_task'
 
-RSpec::Core::RakeTask.new(:turnip) do |t|
-  t.rspec_opts = ["-r turnip/rspec"]
-  t.pattern = "spec/features/**/*.feature"
+require 'cucumber'
+require 'cucumber/rake/task'
+
+Cucumber::Rake::Task.new(:features) do |t|
+  t.cucumber_opts = "features --format pretty"
 end
 
-task :default => :turnip
+task :test => [:features]
+task :default => [:test]

@@ -1,0 +1,5 @@
+echo '--- attempting to push updates to Github...'
+git push origin master
+echo '--- pushing feature documentation to Relishapp...'
+relish push deepcerulean/worlds
+echo '--- push complete!' 
