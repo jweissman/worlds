@@ -5,8 +5,9 @@ source 'https://rubygems.org'
 
 group :test do
   gem 'rake'
-  gem 'rspec'
-  gem 'turnip'
+  gem 'cucumber'
+  #gem 'rspec'
+  #gem 'turnip'
 end
 
 # Specify your gem's dependencies in worlds.gemspec
