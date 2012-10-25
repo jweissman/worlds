@@ -1,20 +1,7 @@
 module Worlds
   module Population
-    DEFAULT_SAMPLE_SIZE = 30
-    LARGE_SAMPLE_SIZE = 30000
-
-    STRONG_CORRELATION = 0.8
-    WEAK_CORRELATION = 0.5
-
-    # default error tolerance is 3%
-    # note we will in certain cases make a percent error calculation
-    # to see if we were within a given percentage of desired target
-    # (also sometimes used as a fallback measure if a 'strict' assertion fails)
-    DEFAULT_TOLERANCE = 0.03
-
     class Base
       attr_accessor :categorical_features, :normally_distributed_features, :covariance_matrix
-
       def initialize
         @categorical_features = []
         @normally_distributed_features = []
@@ -62,7 +49,6 @@ module Worlds
           member.keys.all? do |k|
             member[k] == _member[k]
           end
-          #member.merge(m) == m
         end
       end
 
@@ -86,6 +72,7 @@ module Worlds
         error.should <= tolerance.to_f
       end
 
+      # TODO refactor -- very complex
       def percent_within_deviations?(feature_name, percentage=0.68, deviations=1, tolerance=DEFAULT_TOLERANCE)
         feature = get_feature_by_name(feature_name)
         mean = feature.mean.to_f
@@ -141,6 +128,45 @@ module Worlds
 
       def strongly_correlated?(a,b,tolerance=DEFAULT_TOLERANCE)
         correlated?(a,b,STRONG_CORRELATION,tolerance)
+      end
+
+      def constant_feature(name, value)
+        @categorical_features << ConstantAttribute.new(name, value)
+      end
+
+      def categorical_feature(name, values)
+        @categorical_features << CategoricalAttribute.new(name, values)
+      end
+
+      def normally_distributed_feature(name, mean, std_dev)
+        @normally_distributed_features << NormallyDistributedAttribute.new(name, mean, std_dev)
+      end
+
+      class << self
+        def feature(name,opts={})
+          if opts.include?(:mean) or opts.include?(:standard_deviation)
+            unless opts.include?(:mean) and opts.include?(:standard_deviation)
+              raise "Normally-distributed features must provide both :mean and :standard_deviation"
+            end
+            normally_distributed_feature(name, opts[:mean], opts[:standard_deviation])
+          elsif opts.include?(:value)
+            constant_feature(name, opts[:value])
+          elsif opts.include?(:values)
+            categorical_feature(name, opts[:values])
+          end
+        end
+
+        def correlate(feature_one, feature_two, rho=STRONG_CORRELATION)
+          correlate!(feature_one, feature_two, rho)
+        end
+
+        def correlate_strongly(feature_one, feature_two)
+          strongly_correlate!(feature_one, feature_two)
+        end
+
+        def correlate_weakly(feature_one, feature_two)
+          weakly_correlate!(feature_one, feature_two)
+        end
       end
     end
   end

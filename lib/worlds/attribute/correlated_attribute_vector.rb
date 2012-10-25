@@ -1,59 +1,6 @@
 module Worlds
   module Attribute
     #
-    #   Attribute base entity.
-    #
-    #   Subclasses expected to implement a #sample method, and override #sample!
-    #
-    class Base < Struct.new(:name)
-      def sample!(individual)
-        individual[name] = self.sample
-      end
-    end
-
-    # currently unused -- but for subpops...
-    class ConstantAttribute < Base
-      attr_accessor :value
-      def initialize(name, value)
-        super(name)
-        @value = value
-      end
-
-      def sample
-        @value
-      end
-    end
-
-    class CategoricalAttribute < Base
-      attr_accessor :values
-
-      def initialize(name, values)
-        super(name)
-        @values = values
-      end
-
-      def sample
-        @values.sample
-      end
-    end
-
-    class NormallyDistributedAttribute < Base
-      attr_accessor :mean, :variance, :standard_deviation
-      def initialize(name, mean=0, standard_deviation=1)
-        super(name)
-        @mean                = mean
-        @standard_deviation  = standard_deviation
-        @variance            = @standard_deviation**2
-        @random_gaussian     = RandomGaussian.new(@mean, @standard_deviation)
-      end
-
-      def sample
-        @random_gaussian.rand
-      end
-    end
-
-
-    #
     #   Use a covariance matrix to generate random correlated multivariate values.
     #
     #   Assumptions:

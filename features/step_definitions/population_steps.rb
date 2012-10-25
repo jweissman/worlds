@@ -3,6 +3,7 @@ $:.unshift File.dirname("..")
 require 'lib/worlds'
 
 include Worlds
+include Worlds::Helpers
 include Worlds::Attribute
 
 Before do
@@ -80,3 +81,7 @@ end
 Then /"(.*?)" and "(.*?)" should be (\d+)% correlated/ do |feature_one, feature_two, rho|
   @population.correlated?(feature_one, feature_two, rho.to_f/100).should be_true
 end
+
+#Given /^a file "([^"]*)" with contents:$/ do |arg, text|
+#  #pending
+#end
